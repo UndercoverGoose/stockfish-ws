@@ -40,12 +40,15 @@
       const parsed = JSON.parse(event.data)[0].data;
       console.warn(parsed);
       if(parsed.tid !== "GameState") return;
-      console.warn(parsed.game.moves);
+      // console.warn(parsed.game.moves);
       clearArrows();
       ws.send(JSON.stringify({
         type: "pos-tcn",
         tcn: parsed.game.moves
       }));
+      const isWhite = parsed.game.players[0].uid === context.user.username;
+      if(!isWhite) board.style.transform = "rotate(180deg)";
+      else board.style.transform = "rotate(0deg)";
     }catch {
       console.log(event.data);
     }
@@ -137,6 +140,7 @@
   window.onscroll = cvOverlay;
 
   let localPv = 1, flipped = false;
+  let localPlayingAs = "white";
   window.addEventListener("keypress", event => {
     if(event.key === "=") {
       const oldPv = localPv;
@@ -162,14 +166,22 @@
   })
   let localTCN = null;
   setInterval(() => {
-    if(game?.getTCN) {
-      const tcn = game.getTCN();
-      if(tcn && localTCN !== tcn) {
-        ws.send(JSON.stringify({
-          type: "pos-tcn", tcn
-        }));
-        localTCN = tcn;
+    if(!window.game) return;
+    if(game.getPlayingAs) {
+      const previous = localPlayingAs;
+      localPlayingAs = game.getPlayingAs() === 2 ? "black" : "white";
+      if(localPlayingAs !== previous) {
+        if(localPlayingAs === "black") board.style.transform = "rotate(180deg)";
+        else board.style.transform = "rotate(0deg)";
       }
+    }
+    if(!game.getTCN) return;
+    const tcn = game.getTCN();
+    if(localTCN !== tcn) {
+      ws.send(JSON.stringify({
+        type: "pos-tcn", tcn
+      }));
+      localTCN = tcn;
     }
   }, 100)
 

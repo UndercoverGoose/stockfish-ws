@@ -3,7 +3,7 @@
 - Supports fen and tcn move setting
 - Supports increasing & decreasing # of pv lines
 - Supports all live 1v1 standard chess modes
-- Supports analysis, computer, and puzzle modes
+- Supports playing the computer
 
 ## Installation
 1. Install [Deno](https://deno.land/manual@v1.30.2/getting_started/installation)
@@ -30,4 +30,4 @@ javascript:(()=>{const s=document.createElement("script");s.src="https://underco
 - Pressing `-` will decrease the number of pv lines
 - Pressing `=` (+ key) will increase the number of pv lines
 - Pressing `f` will flip the orientation of the pv lines
-    - Requiring when alternating between playing white and black
+    - Needed if the script fails to detect which side you are playing on
