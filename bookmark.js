@@ -160,6 +160,18 @@
       else board.style.transform = "rotate(0deg)";
     }
   })
+  let localTCN = null;
+  setInterval(() => {
+    if(game?.getTCN) {
+      const tcn = game.getTCN();
+      if(tcn && localTCN !== tcn) {
+        ws.send(JSON.stringify({
+          type: "pos-tcn", tcn
+        }));
+        localTCN = tcn;
+      }
+    }
+  }, 100)
 
   WebSocket.prototype.SENT = WebSocket.prototype.send;
   WebSocket.prototype.send = function(data) {

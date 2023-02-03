@@ -3,6 +3,7 @@
 - Supports fen and tcn move setting
 - Supports increasing & decreasing # of pv lines
 - Supports all live 1v1 standard chess modes
+- Supports analysis, computer, and puzzle modes
 
 ## Installation
 1. Install [Deno](https://deno.land/manual@v1.30.2/getting_started/installation)
