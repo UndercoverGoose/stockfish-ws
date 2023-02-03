@@ -1,0 +1,8 @@
+{
+  "compilerOptions": {
+    "strict": true
+  },
+  "tasks": {
+    "run": "deno run -A server/index.ts"
+  }
+}
