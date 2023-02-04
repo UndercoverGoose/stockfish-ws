@@ -1,4 +1,5 @@
 (() => {
+  const ClientVersion = "1.0.0";
   const notify = (msg, dur = 5000) => {
     alert(msg);
   }
@@ -31,10 +32,18 @@
       console.warn("Drawing Arrow", move, from, to);
       clearArrows(data.pvIndex);
       drawArrow(from, to, Math.max(10 - 2 * data.pvIndex, 2), data.type === "move" ? "black" : "#fc3d2f", data.pvIndex);
+    }else if(data.type === "res-ver") {
+      if(ClientVersion !== data.version) {
+        notify("Stockfish server is not up to date. Update the server for full functionality.\nhttps://github.com/UndercoverGoose/stockfish-ws");
+      }
     }
   }
   ws.onclose = () => {}
-  ws.onopen = () => {}
+  ws.onopen = () => {
+    ws.send(JSON.stringify({
+      type: "req-ver"
+    }));
+  }
   const onmessage = (event) => {
     try {
       const parsed = JSON.parse(event.data)[0].data;
@@ -166,6 +175,25 @@
   })
   let localTCN = null;
   setInterval(() => {
+    if(location.href.includes("puzzle")) {
+      try {
+        const cboard = document.querySelector("chess-board");
+        const fen = cboard.game.getFEN();
+        const tcn = cboard.game.getTCN();
+        if(localTCN === tcn) return;
+        localTCN = tcn;
+        ws.send(JSON.stringify({
+          type: "pos-fen+tcn",
+          fen, tcn
+        }));
+        const previous = localPlayingAs;
+        localPlayingAs = cboard.game.getPlayingAs() === 2 ? "black" : "white";
+        if(localPlayingAs !== previous) {
+          if(localPlayingAs === "black") board.style.transform = "rotate(180deg)";
+          else board.style.transform = "rotate(0deg)";
+        }
+      }catch {}
+    }
     if(!window.game) return;
     if(game.getPlayingAs) {
       const previous = localPlayingAs;
