@@ -5,6 +5,7 @@
 - Supports all live 1v1 standard chess modes
 - Supports playing the computer
 - Supports all puzzle modes
+- Support analysis
 
 ## Installation
 1. Install [Deno](https://deno.land/manual@v1.30.2/getting_started/installation)

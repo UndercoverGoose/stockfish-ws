@@ -175,7 +175,7 @@
   })
   let localTCN = null;
   setInterval(() => {
-    if(location.href.includes("puzzle")) {
+    if(location.href.includes("puzzle") || location.href.includes("analysis")) {
       try {
         const cboard = document.querySelector("chess-board");
         const fen = cboard.game.getFEN();
