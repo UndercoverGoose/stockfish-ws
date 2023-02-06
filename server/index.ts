@@ -44,6 +44,7 @@ wss.on("connection", (ws: WebSocketClient) => {
 
   ws.on("close", () => {
     log("ws", "r:client disconnected");
+    cat.stdin?.write(new TextEncoder().encode(`stop\n`));
     client = undefined;
   });
 });
