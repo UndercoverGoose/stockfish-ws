@@ -2,7 +2,7 @@
   const ClientVersion = "1.0.0";
   const notify = (msg, dur = 5000) => {
     alert(msg);
-  }
+  };
   if(window.sfrunning) return notify("Stockfish is already running.");
   const canvas = document.querySelector("chess-board");
   if(!canvas) return notify("No canvas found. Please refresh the page.");
@@ -23,13 +23,12 @@
   innerBoard.style = "position: relative; width: 100%; height: 100%; pointerEvents: none;";
   board.appendChild(innerBoard);
   document.body.appendChild(board);
-  const ws = new WebSocket("ws://localhost:6666");
+  const ws = new WebSocket("ws://localhost:6969");
   ws.onmessage = (event) => {
     const data = JSON.parse(event.data);
     if(data.type === "move" || data.type === "mate") {
       const move = data.move;
       const [from, to] = coordMap(move);
-      // console.warn("Drawing Arrow", move, from, to);
       clearArrows(data.pvIndex);
       drawArrow(from, to, Math.max(10 - 2 * data.pvIndex, 2), data.type === "move" ? "black" : "#fc3d2f", data.pvIndex);
     }else if(data.type === "res-ver") {
@@ -37,19 +36,17 @@
         notify("Stockfish server is not up to date. Update the server for full functionality.\nhttps://github.com/UndercoverGoose/stockfish-ws");
       }
     }
-  }
-  ws.onclose = () => {}
+  };
+  ws.onclose = () => {};
   ws.onopen = () => {
     ws.send(JSON.stringify({
       type: "req-ver"
     }));
-  }
+  };
   const onmessage = (event) => {
     try {
       const parsed = JSON.parse(event.data)[0].data;
-      // console.warn(parsed);
       if(parsed.tid !== "GameState") return;
-      // console.warn(parsed.game.moves);
       clearArrows();
       ws.send(JSON.stringify({
         type: "pos-tcn",
@@ -59,15 +56,14 @@
       if(!isWhite) board.style.transform = "rotate(180deg)";
       else board.style.transform = "rotate(0deg)";
     }catch {
-      // console.log(event.data);
     }
-  }
+  };
   const getTopBot = (start, end) => {
     if(start[1] < end[1]) return [start, end];
     if(start[1] > end[1]) return [end, start];
     if(start[0] < end[0]) return [start, end];
     return [end, start];
-  }
+  };
   const drawArrow = (from, to, thickness, color, pv) => {
     const scale = board.offsetWidth / 8;
     const [start, end] = getTopBot(from, to);
@@ -98,7 +94,7 @@
     arrowHead.setAttribute("pv", pv);
     innerBoard.appendChild(arrowHead);
     innerBoard.appendChild(arrow);
-  }
+  };
   const clearArrows = (pv) => {
     if(pv) {
       document.querySelector(`.stockfish-arrow[pv='${pv}']`)?.remove();
@@ -111,7 +107,7 @@
     document.querySelectorAll(".stockfish-arrow-head").forEach((arrow) => {
       arrow.remove();
     });
-  }
+  };
   const regenArrows = () => {
     const arrows = [];
     document.querySelectorAll(".stockfish-arrow").forEach((arrow) => {
@@ -127,7 +123,7 @@
     arrows.forEach((arrow) => {
       drawArrow(...arrow);
     });
-  }
+  };
   const cvOverlay = () => {
     const { top, left } = canvas.getBoundingClientRect();
     board.style.width = canvas.offsetWidth + "px";
@@ -135,17 +131,15 @@
     board.style.top = top + "px";
     board.style.left = left + "px";
     regenArrows();
-  }
+  };
   cvOverlay();
   const coordMap = (move) => {
     const rows = ["a", "b", "c", "d", "e", "f", "g", "h"];
     const columns = [8, 7, 6, 5, 4, 3, 2, 1];
-    // example move is e2e4
-    // should map to [[4, 6], [4, 4]]
     const from = [rows.indexOf(move[0]), columns.indexOf(parseInt(move[1]))];
     const to = [rows.indexOf(move[2]), columns.indexOf(parseInt(move[3]))];
     return [from, to];
-  }
+  };
   window.onresize = cvOverlay;
   window.onscroll = cvOverlay;
 
@@ -173,7 +167,7 @@
       if(flipped) board.style.transform = "rotate(180deg)";
       else board.style.transform = "rotate(0deg)";
     }
-  })
+  });
   let localTCN = null;
   setInterval(() => {
     if(location.href.includes("puzzle") || location.href.includes("analysis")) {
@@ -212,12 +206,12 @@
       }));
       localTCN = tcn;
     }
-  }, 100)
+  }, 100);
 
   WebSocket.prototype.SENT = WebSocket.prototype.send;
   WebSocket.prototype.send = function(data) {
     this.removeEventListener("message", onmessage);
     this.addEventListener("message", onmessage);
     this.SENT(data);
-  }
+  };
 })()

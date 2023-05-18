@@ -2,7 +2,7 @@ import { readLines } from "https://deno.land/std@0.104.0/io/mod.ts";
 import { WebSocketClient, WebSocketServer } from "https://deno.land/x/websocket@v0.1.4/mod.ts";
 import { log } from "./logger.ts";
 
-const wss = new WebSocketServer(6666);
+const wss = new WebSocketServer(6969);
 const ServerVersion = "1.0.0";
 
 let client: WebSocketClient | undefined;
