@@ -23,13 +23,13 @@
   innerBoard.style = "position: relative; width: 100%; height: 100%; pointerEvents: none;";
   board.appendChild(innerBoard);
   document.body.appendChild(board);
-  const ws = new WebSocket("ws://localhost:6969");
+  const ws = new WebSocket("ws://localhost:6666");
   ws.onmessage = (event) => {
     const data = JSON.parse(event.data);
     if(data.type === "move" || data.type === "mate") {
       const move = data.move;
       const [from, to] = coordMap(move);
-      console.warn("Drawing Arrow", move, from, to);
+      // console.warn("Drawing Arrow", move, from, to);
       clearArrows(data.pvIndex);
       drawArrow(from, to, Math.max(10 - 2 * data.pvIndex, 2), data.type === "move" ? "black" : "#fc3d2f", data.pvIndex);
     }else if(data.type === "res-ver") {
@@ -47,7 +47,7 @@
   const onmessage = (event) => {
     try {
       const parsed = JSON.parse(event.data)[0].data;
-      console.warn(parsed);
+      // console.warn(parsed);
       if(parsed.tid !== "GameState") return;
       // console.warn(parsed.game.moves);
       clearArrows();
@@ -59,7 +59,7 @@
       if(!isWhite) board.style.transform = "rotate(180deg)";
       else board.style.transform = "rotate(0deg)";
     }catch {
-      console.log(event.data);
+      // console.log(event.data);
     }
   }
   const getTopBot = (start, end) => {
@@ -78,6 +78,7 @@
     const arrow = document.createElement("div");
     arrow.classList.add("stockfish-arrow");
     arrow.style.height = thickness + "px";
+    arrow.style.opacity = thickness / 10;
     arrow.style.width = hypot * scale + "px";
     arrow.style.transform = `rotate(${angle}deg)`;
     arrow.style.top = (start[1] + end[1]) / 2 * scale - thickness/2 + scale/2 + "px";
@@ -93,7 +94,7 @@
     arrow.setAttribute("color", color);
     const arrowHead = document.createElement("div");
     arrowHead.classList.add("stockfish-arrow-head");
-    arrowHead.style = `background: ${color}; top: ${to[1] * scale}px; left: ${to[0] * scale}px; width: ${scale}px; height: ${scale}px; transform: scale(0.4) rotate(${angle - 180}deg);`;
+    arrowHead.style = `background: ${color}; top: ${to[1] * scale}px; left: ${to[0] * scale}px; width: ${scale}px; height: ${scale}px; transform: scale(0.3) rotate(${angle - 180}deg);`;
     arrowHead.setAttribute("pv", pv);
     innerBoard.appendChild(arrowHead);
     innerBoard.appendChild(arrow);
