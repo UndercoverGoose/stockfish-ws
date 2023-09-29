@@ -4,7 +4,7 @@
     alert(msg);
   };
   if(window.sfrunning) return notify("Stockfish is already running.");
-  const canvas = document.querySelector("chess-board");
+  const canvas = document.querySelector("wc-chess-board");
   if(!canvas) return notify("No canvas found. Please refresh the page.");
   window.sfrunning = true;
   const board = document.createElement("div");
